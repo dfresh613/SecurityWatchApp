@@ -1,98 +1,167 @@
 package drfresh.securitywatch3;
 
-import android.content.Context;
-import android.media.MediaPlayer;
-import android.net.Uri;
+import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.content.res.Configuration;
+import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Base64;
-import android.view.SurfaceHolder;
+
+import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.SurfaceView;
 
-import java.util.HashMap;
-import java.util.Map;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
-public class  MainActivity extends AppCompatActivity implements MediaPlayer.OnPreparedListener,
-        SurfaceHolder.Callback {
-    final static String STREAM_URL = "http://192.168.1.13:8083/";
-    final static String USERNAME = null;
-    final static String PASSWORD = null;
 
-    private MediaPlayer _mediaPlayer;
-    private SurfaceHolder _surfaceHolder;
+import drfresh.securitywatch3.fragments.HistoricalViewFragment;
+import drfresh.securitywatch3.fragments.ViewLiveStreamFragment;
+
+public class  MainActivity extends AppCompatActivity {
+    public static final int LIVE_STREAM = 0;
+    public static final int HISTORICAL_VIEW = 1;
+    public static final int SETTINGS = 2;
+    public static final int ABOUT=3;
+    public static final String POSITION = "positionNumber";
+    private String[] mPlanetTitles = {"Live Stream", "Historical Captures", "Settings"};
+    private DrawerLayout mDrawerLayout;
+    private CharSequence mDrawerTitle;
+    private ListView mDrawerList;
+    private CharSequence mTitle;
+    private ActionBarDrawerToggle mDrawerToggle;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Set up a full-screen black window.
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        Window window = getWindow();
+        mTitle = mDrawerTitle = getTitle();
+        /*Window window = getWindow();
         window.setFlags(
                 WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         window.setBackgroundDrawableResource(android.R.color.black);
-
+    */
         setContentView(R.layout.activity_main);
+        //initialize navigation drawer
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
-        // Configure the view that renders live video.
-        SurfaceView surfaceView =
-                (SurfaceView) findViewById(R.id.surfaceView);
-        _surfaceHolder = surfaceView.getHolder();
-        _surfaceHolder.addCallback(this);
-        _surfaceHolder.setFixedSize(320, 240);
-    }
+        //set adapter for list view in nav drawer
+      // mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, mPlanetTitles));
+        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
+                R.layout.drawer_list_item, mPlanetTitles));
 
-    /* SurfaceHolder.Callback */
-    @Override
-    public void surfaceChanged(
-            SurfaceHolder sh, int f, int w, int h) {}
+        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+        // enable ActionBar app icon to behave as action to toggle nav drawer
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
 
-    @Override
-    public void surfaceCreated(SurfaceHolder sh) {
-        _mediaPlayer = new MediaPlayer();
-        _mediaPlayer.setDisplay(_surfaceHolder);
+        // ActionBarDrawerToggle ties together the the proper interactions
+        // between the sliding drawer and the action bar app icon
+        // ActionBarDrawerToggle ties together the the proper interactions
+        // between the sliding drawer and the action bar app icon
+        mDrawerToggle = new ActionBarDrawerToggle(
+                this,                  /* host Activity */
+                mDrawerLayout,         /* DrawerLayout object */
+                R.drawable.ic_drawer,  /* nav drawer image to replace 'Up' caret */
+                R.string.drawer_open,  /* "open drawer" description for accessibility */
+                R.string.drawer_close  /* "close drawer" description for accessibility */
+        ) {
+            public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
+                getSupportActionBar().setTitle(mTitle);
+            }
 
-        Context context = getApplicationContext();
-        //Map<String, String> headers = getRtspHeaders();
-        Uri source = Uri.parse(STREAM_URL);
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                getSupportActionBar().setTitle(mDrawerTitle);
 
-        try {
-            // Specify the IP camera's URL and auth headers.
-            _mediaPlayer.setDataSource(context, source);
+            }
+        };
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
 
-            // Begin the process of setting up a video stream.
-            _mediaPlayer.setOnPreparedListener(this);
-            _mediaPlayer.prepareAsync();
+
+
+        if (savedInstanceState == null) {
+            selectItem(0);
         }
-        catch (Exception e) {}
+    }
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        mDrawerToggle.syncState();
     }
 
     @Override
-    public void surfaceDestroyed(SurfaceHolder sh) {
-        _mediaPlayer.release();
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
-    private Map<String, String> getRtspHeaders() {
-        Map<String, String> headers = new HashMap<>();
-        String basicAuthValue = getBasicAuthValue(USERNAME, PASSWORD);
-        headers.put("Authorization", basicAuthValue);
-        return headers;
-    }
 
-    private String getBasicAuthValue(String usr, String pwd) {
-        String credentials = usr + ":" + pwd;
-        int flags = Base64.URL_SAFE | Base64.NO_WRAP;
-        byte[] bytes = credentials.getBytes();
-        return "Basic " + Base64.encodeToString(bytes, flags);
-    }
-
-    /* MediaPlayer.OnPreparedListener */
     @Override
-    public void onPrepared(MediaPlayer mp) {
-        _mediaPlayer.start();
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Pass the event to ActionBarDrawerToggle, if it returns
+        // true, then it has handled the app icon touch event
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+        // Handle your other action bar items...
+
+        return super.onOptionsItemSelected(item);
     }
 
+
+
+
+    /**
+     * Swaps out fragments depending on selected item
+     */
+    private void selectItem(int position) {
+        Fragment fragment = null;
+        switch (position) {
+            case LIVE_STREAM:
+                fragment = new ViewLiveStreamFragment();
+                break;
+            case HISTORICAL_VIEW:
+                fragment = new HistoricalViewFragment();
+                break;
+            default:
+                fragment = new ViewLiveStreamFragment();
+                break;
+        }
+
+        Bundle args = new Bundle();
+        args.putInt(POSITION, position);
+        fragment.setArguments(args);
+        FragmentManager fragmentManager = getFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+        // update selected item and title, then close the drawer
+        mDrawerList.setItemChecked(position, true);
+        setTitle(mPlanetTitles[position]);
+        mDrawerLayout.closeDrawer(mDrawerList);
+
+    }
+
+    public class DrawerItemClickListener implements ListView.OnItemClickListener {
+
+        @Override
+        public void onItemClick(AdapterView parent, View view, int position, long id) {
+            selectItem(position);
+        }
+
+
+    }
+    @Override
+    public void setTitle(CharSequence title) {
+        mTitle = title;
+       getSupportActionBar().setTitle(mTitle);
+    }
 }

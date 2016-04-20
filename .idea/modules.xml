@@ -2,8 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/SecurityWatch/app.iml" filepath="$PROJECT_DIR$/SecurityWatch/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SecurityWatch/SecurityWatch.iml" filepath="$PROJECT_DIR$/SecurityWatch/SecurityWatch.iml" />
       <module fileurl="file://$PROJECT_DIR$/SecurityWatch3.iml" filepath="$PROJECT_DIR$/SecurityWatch3.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SecurityWatch/app.iml" filepath="$PROJECT_DIR$/SecurityWatch/app.iml" />
     </modules>
   </component>
 </project>
