@@ -124,7 +124,7 @@ public class HistoricalViewFragment extends ListFragment{
         }else{
             String getImageQuery = baseURL +"/images?imageLoc="+currDir+"/"+date;
             Bundle savedImageState = new Bundle();
-            savedImageState.putString("uriString", baseURL);
+            savedImageState.putString(ImageViewFragment.URI_STRING_KEY, getImageQuery);
             Fragment imageFrag = new ImageViewFragment();
             imageFrag.setArguments(savedImageState);
             FragmentTransaction transaction = getFragmentManager().beginTransaction();

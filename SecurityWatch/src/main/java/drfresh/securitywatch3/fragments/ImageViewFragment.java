@@ -1,28 +1,39 @@
 package drfresh.securitywatch3.fragments;
 
 import android.app.Fragment;
-import android.net.Uri;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
+
+import com.squareup.picasso.Picasso;
+
+import java.io.InputStream;
+import java.net.URL;
 
 import drfresh.securitywatch3.R;
 
+
 /**
- * Created by derohde on 4/21/16.
+* Views an image from a URL
  */
 public class ImageViewFragment extends Fragment {
     public String uriString;
+    public static final String URI_STRING_KEY = "uriString";
 
     @Override
-    public void onCreate(Bundle savedInstanceState){
+    public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        this.uriString = getArguments().getString("uriString");
-        Uri imgUri= Uri.parse(uriString);
+        this.uriString = getArguments().getString(URI_STRING_KEY);
 
-        ImageView imageView = new ImageView(getActivity());
-        imageView.setImageURI(null);
-        imageView.setImageURI(imgUri);
-
+        ImageView imageView;
+        imageView = (ImageView) inflater.inflate(R.layout.image_view, container, false);
+        Picasso.with(getActivity()).load(uriString).into(imageView);
+        getActivity().setTitle("Historical captures");
+        return imageView;
     }
+
+
 }
