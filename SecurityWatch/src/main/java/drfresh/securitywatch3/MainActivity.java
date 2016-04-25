@@ -1,6 +1,6 @@
 package drfresh.securitywatch3;
 
-import android.app.Activity;
+
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.res.Configuration;
@@ -11,8 +11,6 @@ import android.os.Bundle;
 
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -22,13 +20,17 @@ import android.widget.ListView;
 import drfresh.securitywatch3.fragments.HistoricalViewFragment;
 import drfresh.securitywatch3.fragments.ViewLiveStreamFragment;
 
+/**
+ * MainActivity consists of a navication drawer containing navigation options,
+ * and a main content panel which is used to swap fragments
+ */
 public class  MainActivity extends AppCompatActivity {
     public static final int LIVE_STREAM = 0;
     public static final int HISTORICAL_VIEW = 1;
     public static final int SETTINGS = 2;
     public static final int ABOUT=3;
     public static final String POSITION = "positionNumber";
-    private String[] mPlanetTitles = {"Live Stream", "Historical Captures", "Settings"};
+    private String[] navigationOptions = {"Live Stream", "Historical Captures", "Settings"};
     private DrawerLayout mDrawerLayout;
     private CharSequence mDrawerTitle;
     private ListView mDrawerList;
@@ -41,21 +43,15 @@ public class  MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         mTitle = mDrawerTitle = getTitle();
-        /*Window window = getWindow();
-        window.setFlags(
-                WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        window.setBackgroundDrawableResource(android.R.color.black);
-    */
+
         setContentView(R.layout.activity_main);
         //initialize navigation drawer
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
         //set adapter for list view in nav drawer
-      // mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, mPlanetTitles));
         mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-                R.layout.drawer_list_item, mPlanetTitles));
+                R.layout.drawer_list_item, navigationOptions));
 
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
         // enable ActionBar app icon to behave as action to toggle nav drawer
@@ -87,7 +83,7 @@ public class  MainActivity extends AppCompatActivity {
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
 
-
+        //by default, load the first menu option as a fragment
         if (savedInstanceState == null) {
             selectItem(0);
         }
@@ -145,7 +141,7 @@ public class  MainActivity extends AppCompatActivity {
         fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
         // update selected item and title, then close the drawer
         mDrawerList.setItemChecked(position, true);
-        setTitle(mPlanetTitles[position]);
+        setTitle(navigationOptions[position]);
         mDrawerLayout.closeDrawer(mDrawerList);
 
     }

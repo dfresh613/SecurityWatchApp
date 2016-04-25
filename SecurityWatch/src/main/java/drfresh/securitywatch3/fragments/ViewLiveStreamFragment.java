@@ -19,7 +19,7 @@ import java.util.Map;
 import drfresh.securitywatch3.R;
 
 /**
- * Created by derohde on 4/20/16.
+ * Fragment utilizes surface view to stream from a live ip camera
  */
 public class ViewLiveStreamFragment extends Fragment implements MediaPlayer.OnPreparedListener,
         SurfaceHolder.Callback {
@@ -54,11 +54,11 @@ public class ViewLiveStreamFragment extends Fragment implements MediaPlayer.OnPr
         _mediaPlayer.setDisplay(_surfaceHolder);
 
         Context context = getView().getContext();
-        //Map<String, String> headers = getRtspHeaders();
+
         Uri source = Uri.parse(STREAM_URL);
 
         try {
-            // Specify the IP camera's URL and auth headers.
+            // Specify the IP camera's URL and auth headers(auth headers currently removed).
             _mediaPlayer.setDataSource(context, source);
 
             // Begin the process of setting up a video stream.
@@ -73,6 +73,10 @@ public class ViewLiveStreamFragment extends Fragment implements MediaPlayer.OnPr
         _mediaPlayer.release();
     }
 
+    /**
+     * Method to be used if credentials are required to authenticate
+     * @return connection headers
+     */
     private Map<String, String> getRtspHeaders() {
         Map<String, String> headers = new HashMap<>();
         String basicAuthValue = getBasicAuthValue(USERNAME, PASSWORD);
@@ -80,6 +84,12 @@ public class ViewLiveStreamFragment extends Fragment implements MediaPlayer.OnPr
         return headers;
     }
 
+    /**
+     * Converts user readable username and password to base64 encoded headers
+     * @param usr
+     * @param pwd
+     * @return base64 encoded username
+     */
     private String getBasicAuthValue(String usr, String pwd) {
         String credentials = usr + ":" + pwd;
         int flags = Base64.URL_SAFE | Base64.NO_WRAP;

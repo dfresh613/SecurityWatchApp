@@ -29,7 +29,9 @@ import java.util.HashMap;
 import drfresh.securitywatch3.R;
 
 /**
- * Created by derohde on 4/20/16.
+ *
+ * Fragment for getting and displaying a list of available dates
+ * from which motion was detected
  */
 public class HistoricalViewFragment extends ListFragment{
     SimpleCursorAdapter mAdapter;
@@ -50,23 +52,7 @@ public class HistoricalViewFragment extends ListFragment{
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        /*
-        ProgressBar progressBar = new ProgressBar(getView().getContext());
-        progressBar.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT,
-                FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.CENTER));
-        progressBar.setIndeterminate(true);
-        getListView().setEmptyView(progressBar);
-        String[] fromColumns = {ContactsContract.Data.DISPLAY_NAME};
-        int[] toViews = {android.R.id.text1};
 
-        mAdapter = new SimpleCursorAdapter(getView().getContext(),
-                android.R.layout.simple_list_item_1, null,
-                fromColumns, toViews, 0);
-        setListAdapter(mAdapter);
-
-
-        getLoaderManager().initLoader(0, null, this);
-        */
         this.populate();
         adapter = new ArrayAdapter(
                 getActivity(),android.R.layout.simple_list_item_1,
@@ -74,9 +60,17 @@ public class HistoricalViewFragment extends ListFragment{
         setListAdapter(adapter);
 
     }
+    //Performs default populate from root directory
     private ArrayList<String> populate(){
         return populate(mocapDirQuery);
     }
+
+    /**
+     * Performs a GET query from server to display available dates. Populates the captures string array
+     * TODO: This method should be performed as an async task
+     * @param queryString
+     * @return list of
+     */
     private ArrayList<String> populate(String queryString) {
         dates = new ArrayList<String>();
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -114,6 +108,10 @@ public class HistoricalViewFragment extends ListFragment{
     }
 
     @Override
+    /**
+     * Handles clicking of item, if the item clicked is a menu item, it will drill down into that menu
+     * if the drill down contains images, should display those images (under construction).
+     */
     public void onListItemClick(ListView l, View v, int position, long id) {
         //get the date the user clicked
         String date = posToDirMap.get(position);
