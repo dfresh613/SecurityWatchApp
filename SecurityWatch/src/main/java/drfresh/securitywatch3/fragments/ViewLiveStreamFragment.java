@@ -23,7 +23,7 @@ import drfresh.securitywatch3.R;
  */
 public class ViewLiveStreamFragment extends Fragment implements MediaPlayer.OnPreparedListener,
         SurfaceHolder.Callback {
-    final static String STREAM_URL = "http://192.168.1.7:8083/";
+    final static String STREAM_URL = "http://192.168.1.9:8083/";
     final static String USERNAME = null;
     final static String PASSWORD = null;
 

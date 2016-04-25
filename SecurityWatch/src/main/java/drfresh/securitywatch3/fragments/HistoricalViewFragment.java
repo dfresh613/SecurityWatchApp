@@ -25,6 +25,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 import drfresh.securitywatch3.R;
 
@@ -61,8 +63,8 @@ public class HistoricalViewFragment extends ListFragment{
 
     }
     //Performs default populate from root directory
-    private ArrayList<String> populate(){
-        return populate(mocapDirQuery);
+    private void populate(){
+        populate(mocapDirQuery);
     }
 
     /**
@@ -71,12 +73,12 @@ public class HistoricalViewFragment extends ListFragment{
      * @param queryString
      * @return list of
      */
-    private ArrayList<String> populate(String queryString) {
+    private void populate(String queryString) {
         dates = new ArrayList<String>();
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         posToDirMap = new HashMap<Integer,String>();
-
+        boolean openInImageViewer = false;
         try {
             URL url = new URL(queryString);
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
@@ -85,12 +87,17 @@ public class HistoricalViewFragment extends ListFragment{
             BufferedReader bRead = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
             //read through the json data
             String next;
+            //Whether or not to open picture viewer.
+
             while((next = bRead.readLine()) != null) {
                 JSONObject returnedData = new JSONObject(next);
                 String date;
                 JSONArray availableDates = returnedData.getJSONArray("fileNames");
                 for(int i =0; i< availableDates.length(); i++) {
                      date = availableDates.getString(i);
+                    if(date.contains("jpg")){
+                        openInImageViewer= true;
+                    }
                     dates.add(date);
                     posToDirMap.put(i,date);
                 }
@@ -104,7 +111,9 @@ public class HistoricalViewFragment extends ListFragment{
             e.printStackTrace();
         }
 
-        return dates;
+        if(openInImageViewer){
+            openImageViews();
+        }
     }
 
     @Override
@@ -134,6 +143,25 @@ public class HistoricalViewFragment extends ListFragment{
         }
 
 
+    }
+
+    public void openImageViews(){
+        //list of queryable images to be used in the image viewer
+        ArrayList<String> queryStrings = new ArrayList<String>();
+        String getImageQuery = "";
+        for(String date: dates){
+            getImageQuery = baseURL +"/images?imageLoc="+currDir+"/"+date;
+            queryStrings.add(getImageQuery);
+        }
+
+        Bundle savedImageState = new Bundle();
+        savedImageState.putStringArrayList(ImageViewFragment.URI_STRING_KEY, queryStrings);
+        Fragment imageFrag = new ImageViewFragment();
+        imageFrag.setArguments(savedImageState);
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.replace(R.id.content_frame, imageFrag);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 }
 
