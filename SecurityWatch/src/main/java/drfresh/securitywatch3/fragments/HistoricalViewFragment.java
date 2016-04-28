@@ -125,7 +125,7 @@ public class HistoricalViewFragment extends ListFragment{
         //get the date the user clicked
         String date = posToDirMap.get(position);
         if(!date.contains("jpg")) {
-            String queryDate = mocapDirQuery + "?subDir=" + date;
+            String queryDate = mocapDirQuery + "?subDir=" +currDir+ "/"+date;
             populate(queryDate);
             adapter.clear();
             adapter.addAll(dates);

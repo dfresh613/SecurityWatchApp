@@ -17,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 
+import drfresh.securitywatch3.fragments.AboutFragment;
 import drfresh.securitywatch3.fragments.HistoricalViewFragment;
 import drfresh.securitywatch3.fragments.ViewLiveStreamFragment;
 
@@ -26,11 +27,13 @@ import drfresh.securitywatch3.fragments.ViewLiveStreamFragment;
  */
 public class  MainActivity extends AppCompatActivity {
     public static final int LIVE_STREAM = 0;
-    public static final int HISTORICAL_VIEW = 1;
-    public static final int SETTINGS = 2;
-    public static final int ABOUT=3;
+    public static final int LIVE_STREAM2 = 1;
+    public static final int HISTORICAL_VIEW = 2;
+    public static final int SETTINGS = 3;
+    public static final int ABOUT=4;
     public static final String POSITION = "positionNumber";
-    private String[] navigationOptions = {"Live Stream", "Historical Captures", "Settings"};
+    private String[] navigationOptions = {"Live Stream (Backdoor)","Live Stream(FrontDoor)",
+            "Historical Captures", "Settings", "About"};
     private DrawerLayout mDrawerLayout;
     private CharSequence mDrawerTitle;
     private ListView mDrawerList;
@@ -126,8 +129,14 @@ public class  MainActivity extends AppCompatActivity {
             case LIVE_STREAM:
                 fragment = new ViewLiveStreamFragment();
                 break;
+            case LIVE_STREAM2:
+                fragment = new ViewLiveStreamFragment();
+                break;
             case HISTORICAL_VIEW:
                 fragment = new HistoricalViewFragment();
+                break;
+            case ABOUT:
+                fragment = new AboutFragment();
                 break;
             default:
                 fragment = new ViewLiveStreamFragment();

@@ -23,7 +23,8 @@ import drfresh.securitywatch3.R;
  */
 public class ViewLiveStreamFragment extends Fragment implements MediaPlayer.OnPreparedListener,
         SurfaceHolder.Callback {
-    final static String STREAM_URL = "http://192.168.1.9:8083/";
+    final static String STREAM_IP = "192.168.1.9";
+    final static String STREAM_URL = "http://"+STREAM_IP+":8083/";
     final static String USERNAME = null;
     final static String PASSWORD = null;
 
@@ -39,7 +40,7 @@ public class ViewLiveStreamFragment extends Fragment implements MediaPlayer.OnPr
         _surfaceHolder = surfaceView.getHolder();
         _surfaceHolder.addCallback(this);
         _surfaceHolder.setFixedSize(320, 240);
-        getActivity().setTitle("Live Stream");
+        getActivity().setTitle("Live Stream@"+ STREAM_IP);
         return surfaceView;
     }
 
