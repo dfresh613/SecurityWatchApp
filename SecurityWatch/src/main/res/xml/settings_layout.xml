@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" android:id="@+id/preferenceView">
+    <Preference
+        android:key="numCams"
+        android:title="Number Of Live Streams"
+        android:dialogTitle="Please enter the number of cameras you wish to connect to and view"
+        android:defaultValue="1" />
+
+    <PreferenceCategory
+        android:title="Stream settings"
+        android:key="StreamIp Address">
+
+    </PreferenceCategory>
+
+
+</PreferenceScreen>

@@ -19,6 +19,7 @@ import android.widget.ListView;
 
 import drfresh.securitywatch3.fragments.AboutFragment;
 import drfresh.securitywatch3.fragments.HistoricalViewFragment;
+import drfresh.securitywatch3.fragments.PreferencesFragment;
 import drfresh.securitywatch3.fragments.ViewLiveStreamFragment;
 
 /**
@@ -137,6 +138,9 @@ public class  MainActivity extends AppCompatActivity {
                 break;
             case ABOUT:
                 fragment = new AboutFragment();
+                break;
+            case SETTINGS:
+                fragment = new PreferencesFragment();
                 break;
             default:
                 fragment = new ViewLiveStreamFragment();
