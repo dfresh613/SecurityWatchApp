@@ -32,7 +32,7 @@ public class  MainActivity extends AppCompatActivity {
     public static final int SETTINGS = 3;
     public static final int ABOUT=4;
     public static final String POSITION = "positionNumber";
-    private String[] navigationOptions = {"Live Stream (Backdoor)","Live Stream(FrontDoor)",
+    private String[] navigationOptions = {"Live Stream (Backdoor)","Live Stream (FrontDoor)",
             "Historical Captures", "Settings", "About"};
     private DrawerLayout mDrawerLayout;
     private CharSequence mDrawerTitle;
